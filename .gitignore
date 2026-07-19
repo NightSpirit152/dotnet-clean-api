@@ -1,0 +1,48 @@
+﻿# .NET build output
+bin/
+obj/
+
+# NuGet package restore intermediate files
+*.nuget.props
+*.nuget.targets
+*.nuget.dgspec.json
+project.assets.json
+project.packagespec.json
+project.nuget.cache
+
+# Rider specific files
+.idea/
+*.sln.iml
+rider.project.restore.info
+rider.project.model.nuget.info
+
+# SQLite database files
+*.db
+*.db-shm
+*.db-wal
+
+# User-specific files
+*.user
+*.userosscache
+*.suo
+*.userprefs
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa]rm/
+[Aa]rm64/
+bld/
+[Bb]in/
+[Oo]bj/
+
+# Visual Studio cache/options
+.vs/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
