@@ -1,5 +1,5 @@
 # Pharmacy Inventory API — Clean Architecture Demo
-🇬🇧 English | [🇷🇺 Russian](README.ru.md)
+en English | [🇷🇺 Russian](README.ru.md)
 
 A demo REST API for tracking medicines and pharmacy inventory, built using **layered (clean) architecture** principles with **Repository** and **Unit of Work** patterns.
 
