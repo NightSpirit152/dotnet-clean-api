@@ -1,44 +1,45 @@
 # Pharmacy Inventory API — Clean Architecture Demo
+🇬🇧 English | [🇷🇺 Russian](README.ru.md)
 
-Демонстрационный REST API для учёта медикаментов и складских остатков в аптеке, построенный по принципам **слоистой (чистой) архитектуры** с паттернами **Repository** и **Unit of Work**.
+A demo REST API for tracking medicines and pharmacy inventory, built using **layered (clean) architecture** principles with **Repository** and **Unit of Work** patterns.
 
-Проект специально спроектирован так, чтобы показать не просто "работающий CRUD", а архитектурный подход: разделение ответственности между слоями, независимость бизнес-логики от инфраструктуры, тестируемость через моки.
+This project is intentionally designed to show more than just "working CRUD". It demonstrates an architectural approach: clear separation of responsibilities between layers, business logic independence from infrastructure, and testability via mocks.
 
-## Архитектура
+## Architecture
 
 ```
 dotnet-clean-api/
 ├── src/
-│   ├── Pharmacy.Domain/          # Сущности и интерфейсы. Ни от чего не зависит.
+│   ├── Pharmacy.Domain/          # Entities and interfaces. Depends on nothing.
 │   │   ├── Entities/              # Medicine, Supplier, StockMovement
 │   │   └── Interfaces/            # IRepository, IMedicineRepository, IUnitOfWork
-│   ├── Pharmacy.Application/     # Бизнес-логика. Зависит только от Domain.
+│   ├── Pharmacy.Application/     # Business logic. Depends only on Domain.
 │   │   ├── DTOs/
-│   │   ├── Services/              # MedicineService — вся бизнес-логика здесь
+│   │   ├── Services/              # MedicineService — all business logic is here
 │   │   └── Exceptions/
-│   ├── Pharmacy.Infrastructure/  # EF Core, реализация репозиториев. Зависит от Domain.
+│   ├── Pharmacy.Infrastructure/  # EF Core, repository implementations. Depends on Domain.
 │   │   ├── Data/                  # AppDbContext
 │   │   └── Repositories/          # Repository<T>, MedicineRepository, UnitOfWork
-│   └── Pharmacy.Api/             # Контроллеры, DI, запуск приложения.
+│   └── Pharmacy.Api/             # Controllers, DI, app startup.
 │       └── Controllers/
 └── tests/
-    └── Pharmacy.Application.Tests/  # xUnit + Moq — тесты бизнес-логики без БД
+    └── Pharmacy.Application.Tests/  # xUnit + Moq — business logic tests without a DB
 ```
 
-**Ключевая идея:** `Pharmacy.Application` не знает про Entity Framework и вообще про то, как хранятся данные — она работает только с интерфейсами из `Pharmacy.Domain`. Это позволяет тестировать бизнес-логику (например, проверку остатков при списании) через моки репозитория, без поднятия реальной базы.
+**Key idea:** `Pharmacy.Application` knows nothing about Entity Framework or how data is stored in general. It works only with interfaces from `Pharmacy.Domain`. This makes it possible to test business logic (for example, stock validation on outgoing movements) using repository mocks, without spinning up a real database.
 
-## Функциональность
+## Features
 
-- CRUD для медикаментов
-- Получение списка товаров с низким остатком (`/low-stock`)
-- Регистрация движения товара (приход/расход) с проверкой, что нельзя списать больше, чем есть на складе
-- Единообразная обработка ошибок (404 / 400 / 409)
+- CRUD for medicines
+- Get low-stock items (`/low-stock`)
+- Register stock movements (incoming/outgoing) with validation that outgoing quantity cannot exceed current stock
+- Consistent error handling (404 / 400 / 409)
 
-## Стек
+## Tech Stack
 
 ASP.NET Core 8 Web API · Entity Framework Core (SQLite) · Repository + Unit of Work · xUnit · Moq · Swagger
 
-## Запуск
+## Run
 
 ```bash
 cd src/Pharmacy.Api
@@ -46,18 +47,18 @@ dotnet restore
 dotnet run
 ```
 
-Swagger UI будет доступен на `https://localhost:xxxx/swagger` (порт покажет консоль при запуске). База данных — SQLite-файл, создаётся автоматически при первом запуске с тестовыми данными (2 медикамента, 1 поставщик).
+Swagger UI will be available at `https://localhost:5000/swagger` (the port is shown in the console on startup). The database is a SQLite file created automatically on first run with seed data (2 medicines, 1 supplier).
 
-## Тесты
+## Tests
 
 ```bash
 cd tests/Pharmacy.Application.Tests
 dotnet test
 ```
 
-6 тестов проверяют бизнес-логику сервиса через моки `IUnitOfWork`/`IMedicineRepository` — без обращения к реальной базе данных.
+6 tests validate service business logic using `IUnitOfWork`/`IMedicineRepository` mocks, without touching a real database.
 
-## Пример запроса
+## Request Example
 
 ```
 POST /api/medicines/stock-movements
@@ -65,7 +66,7 @@ POST /api/medicines/stock-movements
   "medicineId": 2,
   "type": "Outgoing",
   "quantity": 100,
-  "note": "Продажа партии"
+  "note": "Batch sale"
 }
 ```
-→ `409 Conflict`, так как на складе только 8 единиц (см. seed-данные) — бизнес-логика не позволяет уйти в минус.
+→ `409 Conflict`, because only 8 units are in stock (see seed data), and the business logic does not allow negative inventory.
